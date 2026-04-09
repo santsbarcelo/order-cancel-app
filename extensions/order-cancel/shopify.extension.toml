@@ -1,0 +1,19 @@
+api_version = "2026-01"
+
+[[extensions]]
+name = "order-cancel"
+handle = "order-cancel"
+uid = "504dec70-fa89-cd37-f160-deda94dbbfef5fde0953"
+type = "ui_extension"
+
+[[extensions.targeting]]
+target = "customer-account.order.action.menu-item.render"
+module = "./src/MenuActionExtension.jsx"
+
+[[extensions.targeting]]
+target = "customer-account.order.action.render"
+module = "./src/MenuActionModalExtension.jsx"
+
+[extensions.capabilities]
+api_access = true
+network_access = true
