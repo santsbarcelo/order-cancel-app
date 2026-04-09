@@ -10,15 +10,6 @@ export default async () => {
 function MenuActionModalExtension() {
   const [submitting, setSubmitting] = useState(false);
 
-  const close = () => {
-    try {
-      // @ts-expect-error modal API on customer-account.order.action.render
-      shopify.modal?.hide?.();
-    } catch {
-      // no-op
-    }
-  };
-
   const onConfirm = async () => {
     if (submitting) return;
 
@@ -60,7 +51,7 @@ function MenuActionModalExtension() {
         // no-op if BroadcastChannel is unavailable in this runtime
       }
 
-      close();
+      shopify.close();
     } catch (e) {
       shopify.toast.show(
         e instanceof Error ? e.message : "Network error cancelling order",
@@ -70,26 +61,30 @@ function MenuActionModalExtension() {
     }
   };
 
+  // Root must be s-customer-account-action for customer-account.order.action.render (not s-modal).
   return (
-    <s-modal id="order-cancel-confirm" heading="Cancel order" size="base">
-      <s-box padding="base">
-        <s-text>Are you sure you want to cancel this order?</s-text>
-        <s-box padding="base">
-          <s-button-group>
-            <s-button
-              variant="primary"
-              tone="critical"
-              disabled={submitting}
-              onClick={onConfirm}
-            >
-              {submitting ? "Cancelling..." : "Confirm"}
-            </s-button>
-            <s-button variant="secondary" disabled={submitting} onClick={close}>
-              Close
-            </s-button>
-          </s-button-group>
-        </s-box>
-      </s-box>
-    </s-modal>
+    <s-customer-account-action heading="Cancel order">
+      <s-paragraph>
+        Are you sure you want to cancel this order?
+      </s-paragraph>
+      <s-button
+        slot="primary-action"
+        variant="primary"
+        tone="critical"
+        loading={submitting}
+        disabled={submitting}
+        onClick={onConfirm}
+      >
+        Confirm
+      </s-button>
+      <s-button
+        slot="secondary-actions"
+        variant="secondary"
+        disabled={submitting}
+        onClick={() => shopify.close()}
+      >
+        Close
+      </s-button>
+    </s-customer-account-action>
   );
 }

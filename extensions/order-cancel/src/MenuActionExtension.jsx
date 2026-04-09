@@ -83,21 +83,12 @@ function MenuActionExtension() {
     return () => ch.close();
   }, []);
 
-  const onClick = () => {
-    // modal target の id と合わせる（modal は action target 側の API）
-    try {
-      // @ts-expect-error modal is available when paired with customer-account.order.action.render
-      shopify.modal?.show?.("order-cancel-confirm");
-    } catch {
-      shopify.toast.show("Unable to open confirmation");
-    }
-  };
-
   if (loading) return null;
   if (!visible) return null;
 
+  // Omit href / onPress / onClick so Shopify opens the paired customer-account.order.action.render target.
   return (
-    <s-button tone="critical" onClick={onClick}>
+    <s-button tone="critical" accessibilityLabel="Cancel order">
       Cancel order
     </s-button>
   );
